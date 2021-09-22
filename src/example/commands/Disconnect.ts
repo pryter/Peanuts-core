@@ -1,7 +1,9 @@
-import {Controller} from "../lib/controls/Controller";
+import {Controller} from "../../lib/controls/Controller";
 import {VoiceConnection} from "discord.js";
+import {ExampleController} from "../ExampleController";
 
-export class Disconnect extends Controller {
+// Create commands from a custom Controller to apply registered Queue or Player instance
+export class Disconnect extends ExampleController {
 
   protected isRequireConnection(): boolean {
     return true

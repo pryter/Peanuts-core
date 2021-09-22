@@ -1,5 +1,4 @@
-import {Bot} from "./lib/controls/Bot";
-import {Controller} from "./lib/controls/Controller";
+import {Bot} from "../lib/controls/Bot";
 import dotenv from 'dotenv'
 import {Fuckoff} from "./commands/Fuckoff";
 import {Play} from "./commands/Play";
@@ -12,6 +11,8 @@ dotenv.config()
 
 const peanuts = new Bot()
 
+
+// Register commands
 peanuts.register(
   new Play(),
   new Disconnect(),

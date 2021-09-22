@@ -4,8 +4,8 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "echo 'compiling typscripts..' && tsc && echo 'done'",
-    "start": "node dist/example.js",
-    "dev": "ts-node-dev src/example.ts"
+    "start": "node dist/example/index.js",
+    "dev": "ts-node-dev src/example/index.ts"
   },
   "repository": "git@github.com:pryter/Peanuts-core.git",
   "author": "Peter <peterphongpak@gmail.com>",

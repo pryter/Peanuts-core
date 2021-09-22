@@ -4,6 +4,8 @@ import {Queue} from "./Queue";
 import {Storage} from "../storage/Storage";
 import {Player} from "./Player";
 import {VoiceAction} from "./VoiceAction";
+import {Console} from "../console/Console";
+import {ConsoleColours} from "../console/ConsoleColours";
 
 
 export type VoiceConnCallback = ((connection: VoiceConnection) => any) | ((connection: VoiceConnection) => Promise<any>)
@@ -20,6 +22,10 @@ export class Controller extends VoiceAction {
     super()
     this.BotInstance = BotInstance
     this.Player = this.getPlayerInstance()
+
+    if (this.Player.constructor.name !== "Player") {
+      new Console(`[Info]: Loaded custom player [${this.Player.constructor.name}]${this.getNamespace() && ` for [${this.constructor.name}]`}`).setColour(0, ConsoleColours.YELLOW).emit()
+    }
   }
 
   // Main Methods
@@ -43,7 +49,6 @@ export class Controller extends VoiceAction {
   protected async runtime(args: Array<string>, connection?: VoiceConnection): Promise<void> {
 
   }
-
 
   // Utility Methods
 

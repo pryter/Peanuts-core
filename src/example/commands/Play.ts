@@ -1,10 +1,12 @@
-import {Controller} from "../lib/controls/Controller";
+import {Controller} from "../../lib/controls/Controller";
 import {MessageEmbed, VoiceConnection} from "discord.js";
-import {RawTrack} from "../lib/track/RawTrack";
-import {Player} from "../lib/controls/Player";
-import {randomCat} from "../lib/utils/randomEmoji";
+import {RawTrack} from "../../lib/track/RawTrack";
+import {Player} from "../../lib/controls/Player";
+import {randomCat} from "../../lib/utils/randomEmoji";
+import {ExampleController} from "../ExampleController";
 
-export class Play extends Controller {
+// Create commands from a custom Controller to apply registered Queue or Player instance
+export class Play extends ExampleController {
 
   constructor() {
     super();

@@ -1,7 +1,10 @@
-import {Controller} from "../lib/controls/Controller";
+import {Controller} from "../../lib/controls/Controller";
 import {MessageEmbed, VoiceConnection} from "discord.js";
+import {ExampleController} from "../ExampleController";
 
-export class Shuffle extends Controller {
+// Create commands from a custom Controller to apply registered Queue or Player instance
+export class Shuffle extends ExampleController {
+
   constructor() {
     super();
   }
