@@ -62,7 +62,6 @@ export class Player extends VoiceAction {
         connection.dispatcher?.end()
       }
 
-
     })
 
   }

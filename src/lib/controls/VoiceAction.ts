@@ -19,6 +19,7 @@ export class VoiceAction {
       return
     }
 
+    connection.removeAllListeners("disconnect")
     connection.on("disconnect", () => {
       this.Queue?.clear()
     })

@@ -1,4 +1,7 @@
 import {PlayableTrack} from "./PlayableTrack";
+import {checkUrlSource} from "../utils/urls";
+import {getTracks} from "spotify-url-info";
+import {Error} from "../console/Error";
 const ytsr = require('ytsr')
 
 export class RawTrack {
@@ -36,16 +39,26 @@ export class RawTrack {
 
       if (this.url) {
 
-        //TODO Spotify & apple music track
-        if (this.url.includes("spotify.com")) {
-
+        switch (checkUrlSource(this.url)) {
+          case "spotify":
+          {
+            const spotify = await getTracks(this.url)
+            const query = `${spotify[0].name}${spotify[0].artists?.map((person) => (` ${person.name}`))}`
+            const context = await ytsr(query, {limit: 1})
+            const suggested = context.items[0]
+            return new PlayableTrack(suggested.title, suggested.url)
+          }
+          case "apple":
+          {
+            new Error("Apple music's track url is not supported yet!").emit()
+            return null
+          }
+          case "youtube":
+            return new PlayableTrack(this.title || this.url, this.url)
+          default:
+            return null
         }
 
-        if (this.url.includes("music.apple.com")) {
-
-        }
-
-        return new PlayableTrack(this.title || this.url, this.url)
       }
     }
 

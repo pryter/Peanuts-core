@@ -1,6 +1,7 @@
 import path from "path"
 import * as fs from "fs";
 import {StorableData} from "./StorableData";
+import {Error} from "../console/Error";
 
 export class Storage {
 
@@ -9,6 +10,9 @@ export class Storage {
 
   constructor(name: string) {
     this.root = path.join(this.ABS_PATH, name)
+    if (this.isWritable()) {
+      new Error(`Folder \`${name}\` does not exist.`, "Create one at project's root folder.").emit()
+    }
   }
 
   public store(key: string, value: StorableData) {
@@ -23,6 +27,10 @@ export class Storage {
 
   public append(key: string, value: StorableData) {
     fs.appendFileSync(path.join(this.root, key), `${value.stringfy()}\n`)
+  }
+
+  public isWritable() {
+    return fs.existsSync(this.root)
   }
 
 }

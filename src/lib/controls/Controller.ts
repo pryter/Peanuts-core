@@ -15,6 +15,7 @@ export class Controller extends VoiceAction {
 
   protected BotInstance: Bot | undefined
 
+  protected Queue: Queue
   // Built-in player or extended player
   protected Player: Player
 
@@ -22,6 +23,7 @@ export class Controller extends VoiceAction {
     super()
     this.BotInstance = BotInstance
     this.Player = this.getPlayerInstance()
+    this.Queue = this.getQueueInstance()
 
     if (this.Player.constructor.name !== "Player") {
       new Console(`[Info]: Loaded custom player [${this.Player.constructor.name}]${this.getNamespace() && ` for [${this.constructor.name}]`}`).setColour(0, ConsoleColours.YELLOW).emit()
@@ -61,7 +63,8 @@ export class Controller extends VoiceAction {
     this.textChannel = <TextChannel>messageInstance.channel
     this.voiceChannel = <VoiceChannel>messageInstance.member?.voice.channel
     this.guildId = messageInstance.member?.guild.id
-    this.Queue = this.getQueueInstance().setGuildId(this.guildId)
+    this.Queue.setGuildId(this.guildId)
+    this.Player = this.getPlayerInstance()
 
     const splitted = messageInstance.content.split(" ")
     splitted.shift()

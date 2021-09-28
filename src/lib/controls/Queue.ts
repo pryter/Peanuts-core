@@ -67,6 +67,7 @@ export class Queue {
     const safeGuildId = guildId || <string> this.targetGuildId
 
     const queue = this.getQueue(safeGuildId)
+
     if (queue) {
       const skipped = queue.skip()
       this.Storage.store(safeGuildId, queue.getStorableData())

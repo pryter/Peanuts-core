@@ -1,9 +1,13 @@
-import {Controller} from "../../lib/controls/Controller";
 import {MessageEmbed, VoiceConnection} from "discord.js";
 import {RawTrack} from "../../lib/track/RawTrack";
 import {Player} from "../../lib/controls/Player";
 import {randomCat} from "../../lib/utils/randomEmoji";
 import {ExampleController} from "../ExampleController";
+import {checkUrlSource, containsMultipleTracks} from "../../lib/utils/urls";
+import {getTracks} from "spotify-url-info";
+import {RawTracks} from "../../lib/track/RawTracks";
+
+const apl = require("apple-music-playlist");
 
 // Create commands from a custom Controller to apply registered Queue or Player instance
 export class Play extends ExampleController {
@@ -19,14 +23,65 @@ export class Play extends ExampleController {
   protected async runtime(args: Array<string>, connection?: VoiceConnection): Promise<void> {
     const keyword = args.join(" ")
 
-    const track = await new RawTrack(keyword).getPlayableTrack()
-    if (track) {
-      this.Queue?.addTrack(track)
-      this.textChannel?.send(new MessageEmbed({title: `Added to queue ${randomCat()}`, description: `[${track.title}](${track.url})`}))
+    let tracks: RawTracks = new RawTracks([])
+
+    if (containsMultipleTracks(keyword)) {
+      const trackType = checkUrlSource(keyword)
+
+      switch (trackType) {
+        case "spotify": {
+          const tracksData = await getTracks(keyword)
+
+          tracks = new RawTracks(tracksData.map(data => (
+            new RawTrack(
+              `${data.name}${data.artists?.map(
+                (person) => (` ${person.name}`))
+              }`,
+              data.name
+            )
+          )))
+        }
+          break
+        case "apple": {
+          const tracksData = await apl.getPlaylist(keyword)
+
+          tracks = new RawTracks(tracksData.map(
+            (data: { title: string, artist: string }) => (
+              new RawTrack(`${data.title} ${data.artist}`, data.title)
+            )))
+
+        }
+          break
+      }
+
+    } else {
+      tracks = new RawTracks([
+        new RawTrack(keyword)
+      ])
     }
 
-    if (!connection?.dispatcher) {
-      await new Player(this).play()
+    const currentTrack = await tracks[0].getPlayableTrack()
+
+    if (currentTrack) {
+      if (tracks.length == 1) {
+        this.Queue?.addTrack(currentTrack)
+        this.textChannel?.send(new MessageEmbed(
+          {
+            title: `Added to queue ${randomCat()}`,
+            description: `[${currentTrack.title}](${currentTrack.url})`
+          }
+        ))
+      }else{
+        this.Queue?.addTracks(tracks)
+        this.textChannel?.send(
+          new MessageEmbed({title: `Playlist added ${randomCat()}`, description: `This playlist contains ${tracks.length} tracks`})
+        )
+      }
+
+      if (!connection?.dispatcher) {
+        await this.Player.play()
+      }
     }
+
   }
 }
