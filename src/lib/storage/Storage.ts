@@ -10,7 +10,7 @@ export class Storage {
 
   constructor(name: string) {
     this.root = path.join(this.ABS_PATH, name)
-    if (this.isWritable()) {
+    if (!this.isWritable()) {
       new Error(`Folder \`${name}\` does not exist.`, "Create one at project's root folder.").emit()
     }
   }
